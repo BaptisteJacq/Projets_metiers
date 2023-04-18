@@ -40,12 +40,18 @@ MERGE INTO G_BASE_VOIE.TA_SIGNALISATION_FAMILLE a
             'Famille regroupant les différents types de route existant.' AS description
         FROM
             DUAL
+        UNION ALL
+        SELECT
+            'couleur' AS valeur,
+            'Couleur des signalisations.' AS description
+        FROM
+            DUAL
     )t    
 ON(a.valeur = t.valeur)    
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.description)
     VALUES(t.valeur, t.description);
--- Résultat : 6 lignes fusionnées
+-- Résultat : 7 lignes fusionnées
 
 -- Insertion des états de la signalisation
 MERGE INTO G_BASE_VOIE.TA_SIGNALISATION_LIBELLE a
@@ -222,6 +228,21 @@ WHEN NOT MATCHED THEN
     VALUES(t.valeur, t.description);
 -- Résultat : 81 lignes fusionnées
 
+-- Insertion des couleurs
+MERGE INTO G_BASE_VOIE.TA_SIGNALISATION_LIBELLE a
+    USING(
+        SELECT DISTINCT
+            TRIM(LOWER(a."couleur")) AS valeur,
+            'Couleur utilisée pour la signalisation routière.' AS description
+        FROM
+            G_BASE_VOIE.temp_signalisation_mel_sh_surf_marque a
+    )t    
+ON(a.valeur = t.valeur)    
+WHEN NOT MATCHED THEN
+    INSERT(a.valeur, a.description)
+    VALUES(t.valeur, t.description);
+-- Résultat : 6 lignes fusionnée
+
 -- Insertion des autres libellés       
 MERGE INTO G_BASE_VOIE.TA_SIGNALISATION_LIBELLE a
     USING(
@@ -341,14 +362,24 @@ MERGE INTO G_BASE_VOIE.TA_SIGNALISATION_RELATION_FAMILLE_LIBELLE a
         WHERE
             a.valeur = 'type de route'
             AND b.valeur IN('autoroute', 'route à chaussées séparées', 'route à 4 voies de rase campagne', 'route importante', 'piste cyclable')
+        UNION ALL
+        SELECT DISTINCT
+            a.objectid AS fid_famille,
+            b.objectid AS fid_libelle
+        FROM
+            G_BASE_VOIE.TA_SIGNALISATION_FAMILLE a,
+            G_BASE_VOIE.TA_SIGNALISATION_LIBELLE b
+            INNER JOIN G_BASE_VOIE.TEMP_SIGNALISATION_MEL_SH_SURF_MARQUE c ON TRIM(LOWER(c."couleur")) = b.valeur
+        WHERE
+            a.valeur = 'couleur'
     )t
 ON(a.fid_famille = t.fid_famille AND a.fid_libelle = t.fid_libelle)    
 WHEN NOT MATCHED THEN
     INSERT(a.fid_famille, a.fid_libelle)
     VALUES(t.fid_famille, t.fid_libelle);
--- Résultat : 105 lignes fusionnées
+-- Résultat : 111 lignes fusionnées
 
--- insertion des relations libellés parents / libellés enfants
+-- Insertion des relations libellés parents / libellés enfants
 MERGE INTO G_BASE_VOIE.TA_SIGNALISATION_RELATION_LIBELLE a
     USING(
         /*SELECT
@@ -374,12 +405,20 @@ MERGE INTO G_BASE_VOIE.TA_SIGNALISATION_RELATION_LIBELLE a
         WHERE
             a.valeur = 'u'
             AND d.valeur = 'type de route'
+        UNION ALL       
+        SELECT DISTINCT
+            b.objectid AS fid_libelle_parent,
+            c.objectid AS fid_libelle_fils
+        FROM
+            G_BASE_VOIE.temp_signalisation_mel_sh_surf_marque a
+            INNER JOIN G_BASE_VOIE.TA_SIGNALISATION_LIBELLE b ON b.valeur = TRIM(LOWER(a."registre"))
+            INNER JOIN G_BASE_VOIE.TA_SIGNALISATION_LIBELLE c ON c.valeur = TRIM(LOWER(a."couleur"))
     )t
 ON(a.fid_libelle_parent = t.fid_libelle_parent AND a.fid_libelle_fils = t.fid_libelle_fils)    
 WHEN NOT MATCHED THEN
     INSERT(a.fid_libelle_parent, a.fid_libelle_fils)
     VALUES(t.fid_libelle_parent, t.fid_libelle_fils);
--- Résultat : 5 lignes fusionnées
+-- Résultat : 22 lignes fusionnées
 
 -- Insertion des pnoms des agents
 MERGE INTO G_BASE_VOIE.TA_SIGNALISATION_AGENT a
