@@ -16,7 +16,6 @@ CREATE TABLE G_BASE_VOIE.TA_SIGNALISATION_MARQUAGE_SURFACIQUE(
     fid_materiau NUMBER(38,0) NOT NULL,
     fid_modulation NUMBER(38,0) NOT NULL,
     fid_registre NUMBER(38,0) NOT NULL,
-    fid_type NUMBER(38,0) NOT NULL,
     fid_troncon NUMBER(38,0)
 );
 
@@ -34,7 +33,6 @@ COMMENT ON COLUMN G_BASE_VOIE.TA_SIGNALISATION_MARQUAGE_SURFACIQUE.fid_etat IS '
 COMMENT ON COLUMN G_BASE_VOIE.TA_SIGNALISATION_MARQUAGE_SURFACIQUE.fid_materiau IS 'Clé étrangère vers la table TA_VOIRIE_LIBELLE permettant de connaître le type de matériau utilisé pour le marquage - ancien champ nature_materiau.';
 COMMENT ON COLUMN G_BASE_VOIE.TA_SIGNALISATION_MARQUAGE_SURFACIQUE.fid_modulation IS 'Clé étrangère vers la table TA_VOIRIE_LIBELLE permettant d''associer la modulation d''un marquage (distance entre deux éléments d''un même marquage) au marquage proprement dit - ancien champ modulation.';
 COMMENT ON COLUMN G_BASE_VOIE.TA_SIGNALISATION_MARQUAGE_SURFACIQUE.fid_registre IS 'Clé étrangère vers la table TA_VOIRIE_LIBELLE permettant d''associer un marquage à son type de positionnement sur la chaussée (milieu de voie, bas-côté de la chaussée, etc) - ancien champ registre.';
-COMMENT ON COLUMN G_BASE_VOIE.TA_SIGNALISATION_MARQUAGE_SURFACIQUE.fid_type IS 'Clé étrangère vers la table TA_VOIRIE_LIBELLE permettant d''associer un marquage à son type de positionnement sur la chaussée (milieu de voie, bas-côté de la chaussée, etc) - ancien champ registre.';
 COMMENT ON COLUMN G_BASE_VOIE.TA_SIGNALISATION_MARQUAGE_SURFACIQUE.fid_troncon IS 'Clé étrangère vers la table SIREO_LEC.OUT_DOMANIALITE permettant d''associer un marquage à un tronçon de voirie - ancien champ num_troncon.';
 
 -- 3. Création de la clé primaire
