@@ -7,13 +7,13 @@ SET /p MDP_D="Veuillez saisir le mot de passe de l'utilisateur Oracle de destina
 SET /p INSTANCE_D="Veuillez saisir l'instance Oracle de destination: "
 
 :: 2. se mettre dans l'environnement QGIS
-cd C:\Program Files\QGIS 3.28.5\bin
+cd C:\Program Files\QGIS 3.28.7\bin
 
 :: 3. Configurer le système d'encodage des caractères en UTF-8
 SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 
 :: 4. Rediriger la variable PROJ_LIB vers le bon fichier proj.db afin qu'ogr2ogr trouve le bon scr
-setx PROJ_LIB "C:\Program Files\QGIS 3.28.5\share\proj"
+setx PROJ_LIB "C:\Program Files\QGIS 3.28.7\share\proj"
 
 :: 5. commande ogr2ogr pour exporter les couches du geopackage X@X vers le schéma X@X
 ogr2ogr -f OCI OCI:%USER_D%/%MDP_D%@%INSTANCE_D% C:\Users\bjacq\Documents\Projets\signalisation_horizontale\MEL_SH_2022_catalogage.gpkg -sql "SELECT GEOM, id_sh_longitudinale, modulation, largeur, registre, etat, nature_materiau, remarque, num_troncon, num_iti_cyclable, auteur, couleur FROM MEL_sh_longitudinale" -nln TEMP_SIGNALISATION_MEL_SH_LONGITUDINALE -nlt MULTILINESTRING -lco SRID=2154 -dim 2 -skipfailures
